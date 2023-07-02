@@ -1,0 +1,9 @@
+/.idea
+/lib
+/bin
+/data
+/include
+/lib64
+/dist
+*.pyc
+__pycache__
