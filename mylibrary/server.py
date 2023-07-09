@@ -1,13 +1,22 @@
+"""
+Server module that implements different endpoints:
+* /status: to show the health of the server
+* /: to serve the home page
+* /add-to-library: to show the add to library web page
+* /currently-reading: to show the books currently reading list
+* /add_book/: add pook api endpoint implementation
+* /update/: update an already existing book data
+* /delete/: delete a book from the collection
+"""
 import json
 import os
 import sys
 from flask import Flask, jsonify, render_template, request, session
 
 sys.path.append('..')
-from mylibrary.helpers.helpers import load_config, init_logger, is_int, get_parameter
 from mylibrary.controllers.books_controller import BooksController
+from mylibrary.helpers.helpers import load_config, init_logger, is_int, get_parameter
 from mylibrary.models.book import BookModel
-
 
 app = Flask(__name__)
 config_file = os.path.join("config", "mylibrary.conf")
@@ -122,7 +131,7 @@ def add():
 
         if is_added:
             # try to make the currently reading books span
-            if not int(book_progress) == 100:
+            if int(book_progress) != 100:
                 session['currently-reading'] = session['currently-reading'] + 1
             root_logger.info("book is added successfully to the library")
             return jsonify({
@@ -135,9 +144,9 @@ def add():
                 "success": False,
                 "error": f"book {book_title} already exists"
             }), 409
-        else:
-            root_logger.error("Failed to add book due to an internal server")
-            return jsonify({
+
+        root_logger.error("Failed to add book due to an internal server")
+        return jsonify({
                 "success": False,
                 "error": f"failed to add book {book_title}"
             }), 500
@@ -181,7 +190,7 @@ def update():
                 notes=update_data.get("notes")
             )
         )
-        if not int(update_data.get("progress")) == 100:
+        if int(update_data.get("progress")) != 100:
             session['currently-reading'] = session['currently-reading'] + 1
     except Exception:
         root_logger.exception("An exception occurred while processing request")

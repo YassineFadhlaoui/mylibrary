@@ -1,3 +1,7 @@
+"""
+database connector implementation
+"""
+
 import configparser
 from functools import cached_property
 
@@ -10,6 +14,9 @@ from mylibrary.models.book import BookModel
 
 
 class BooksDBConnector:
+    """
+    A database connector for database books
+    """
 
     def __init__(self, config: configparser):
         """
@@ -30,7 +37,7 @@ class BooksDBConnector:
         elif debug_db.lower() in ["false", "off", "no", "0", "disabled", "disable", "f", "n"]:
             return False
         raise Exception("Could not understand provided value",
-                        f"You provided a value that we cannot understand for DATABASE DEBUG")
+                        "You provided a value that we cannot understand for DATABASE DEBUG")
 
     @cached_property
     def db_engine(self):

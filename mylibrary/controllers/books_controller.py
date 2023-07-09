@@ -1,3 +1,6 @@
+"""
+Books controller module
+"""
 import configparser
 from dataclasses import asdict
 

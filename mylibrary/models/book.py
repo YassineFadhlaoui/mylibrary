@@ -1,3 +1,6 @@
+"""
+module that implements the Model for Book
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
