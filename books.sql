@@ -50,7 +50,6 @@ The Republic	Plato	static/covers/the_republic.jpg	f	76	   The Concept of Justice
 don quixote	Miguel de Cervantes	static/covers/don_quixote.jpeg	t	100	no notes yet
 animal farm	George Orwell	static/covers/animal_farm.jpeg	f	99	no notes yet
 the trial	franz kafka	static/covers/the_trial.jpeg	t	100	no notes yet
-the little prince	Antoine de Saint-Exupéry	static/covers/the_little_prince.jpeg	t	100	no notes yet
 \.
 
 
