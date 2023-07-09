@@ -93,6 +93,6 @@ The web application is now ready to be started using `gunicorn`.
 # go into mylibrary folder that is inside the mylibrary root folder
 cd mylibrary/mylibrary
 export PATH="$PATH:/home/monitoring/.local/bin"
-gunicorn -w 4 mylibrary.server:app --bind 0.0.0.0:8080
+gunicorn -w 4 server:app --bind 0.0.0.0:8080
 ~~~
 
