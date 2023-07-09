@@ -24,4 +24,4 @@ class BookModel:
     cover: str = field(metadata={"sa": Column(String(2048), nullable=True)})
     finished: bool = field(metadata={"sa": Column(Boolean, default=False)})
     progress: int = field(metadata={"sa": Column(Integer, default=0)})
-    notes: str = field(metadata={"sa": Column(String(4096), nullable=True)})
+    notes: str = field(metadata={"sa": Column(String(4096), default="no notes yet", nullable=True)})
