@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>My Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/css/vendor/bootstrap.min.css" rel="stylesheet">
+    <!-- Loading Bootstrap -->
+
+
+    <!-- Loading Flat UI Pro -->
+    <link href="/static/css/flat-ui.css" rel="stylesheet">
+
+    <style>
+    body {
+          background-image: url("static/images/bg.jpg");
+        }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-expand-lg" role="navigation">
+          <a class="navbar-brand" href="/">My Library</a>
+          <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse-01"></button>
+          <div class="collapse navbar-collapse" id="navbar-collapse-01">
+            <ul class="nav navbar-nav mr-auto">
+              <li {% if request_path == "/" %}class="active" {% endif %}><a href="/">My Library</a></li>
+              <li {% if request_path == "/add-to-library" %}class="active" {% endif %}><a href="/add-to-library">Add book</a></li>
+              <li {% if request_path == "/currently-reading" %}class="active" {% endif %}><a href="/currently-reading">Currently reading <span class="navbar-new">{{currently_reading}}</span> </a></li>
+
+            </ul>
+          </div><!-- /.navbar-collapse -->
+    </nav><!-- /navbar -->
+
+    <div class="container">
+       {% for book  in books -%}
+            {% if books.index(book) % 4 == 0 %}
+               <div class="row">
+                   <div class="col-lg-10">
+                      <div class="row">
+            {% endif %}
+                        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                          <div class="tile">
+                            {% if book.finished %}
+                                <img src="/static/assets/icons/finished-ribbon.png" alt="ribbon" class="tile-hot-ribbon">
+                            {% else %}
+                                <img src="/static/assets/icons/reading-ribbon.png" alt="ribbon" class="tile-hot-ribbon">
+                            {% endif %}
+                            <img src="/{{book.cover}}" alt="Compas" class="tile-image big-illustration">
+                            <h3 class="tile-title">{{book.title}}</h3>
+                            <p align="left" ><b>Author:</b> {{book.author}}
+                               <br><b>progress:</b> {{book.progress}}%
+                            </p>
+                            <button type="button" class="btn btn-info btn-large btn-block" data-toggle="modal" data-target="#{{book.title | lower | replace(' ','_')}}_show_notes_modal">
+                                    <span class="fui-bookmark"></span> Show notes
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="{{book.title | lower | replace(' ','_')}}_show_notes_modal" tabindex="-1" role="dialog" aria-labelledby="{{book.title | lower | replace(' ','_')}}_show_notes_label" aria-hidden="true">
+                              <div class="modal-dialog"  role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="{{book.title | lower | replace(' ','_')}}_show_notes_modal_label">'{{book.title}}' notes</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      {{book.notes}}
+                                  </div>
+                                 <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"> <span class="fui-cross-circle"></span> Close</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% if book.finished %}
+                                <a class="btn btn-primary btn-large btn-block disabled"> <span class="fui-new"></span> Update progress</a>
+                            {% else %}
+
+                            <button type="button" class="btn btn-warning btn-large btn-block" data-toggle="modal" data-target="#{{book.title | lower | replace(' ','_')}}_update_modal">
+                                    <span class="fui-new"></span> Update
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="{{book.title | lower | replace(' ','_')}}_update_modal" tabindex="-1" role="dialog" aria-labelledby="{{book.title | lower | replace(' ','_')}}_update_modal_label" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="{{book.title | lower | replace(' ','_')}}_update_modal_label">Update '{{book.title}}' information</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <form id="{{book.title | lower | replace(' ','_')}}_update_form">
+                                        <div class="form-group">
+                                            <label for="{{book.title | lower | replace(' ','_')}}_update_modal_progress">Progress: </label>
+                                            <input type="text" class="form-control" id="{{book.title | lower | replace(' ','_')}}_update_modal_progress" placeholder="99%">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{book.title | lower | replace(' ','_')}}_update_modal_notes">Notes about {{book.title}} of {{book.author}}: </label>
+                                            <textarea  class="form-control" id="{{book.title | lower | replace(' ','_')}}_update_modal_notes" rows="3"> {{book.notes}} </textarea>
+                                        </div>
+                                      </form>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"> <span class="fui-cross-circle"></span> Close</button>
+                                    <button type="button" onclick="update_book('{{book.title}}')" class="btn btn-primary"><span class="fui-plus-circle"></span> Save changes</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            {% endif %}
+
+                            <button type="button" class="btn btn-danger btn-large btn-block" data-toggle="modal" data-target="#{{book.title | lower | replace(' ','_')}}_delete_modal">
+                                    <span class="fui-cross"></span> remove
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="{{book.title | lower | replace(' ','_')}}_delete_modal" tabindex="-1" role="dialog" aria-labelledby="{{book.title | lower | replace(' ','_')}}_delete_modal_label" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="{{book.title | lower | replace(' ','_')}}_delete_modal_label">Remove '{{book.title}}'</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <img src="{{book.cover}}" class="tile-image big-illustration">
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"> <span class="fui-cross-circle"></span> Close</button>
+                                    <button type="button" onclick="delete_book('{{book.title}}')" class="btn btn-danger"><span class="fui-trash"></span> Remove book</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+
+                          </div>
+                        </div>
+            {% if ((books.index(book) +1) % 4 == 0) or ((books.index(book)+1) == (books|length)) %}
+                    </div>
+                </div>
+              </div>
+            {% endif %}
+       {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/popper.js@1.14.1/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="/static/scripts/flat-ui.js"></script>
+    <script src="/static/scripts/bootstrap.min.js"></script>
+    <script src="/static/scripts/mylibrary.js"></script>
+  </body>
+</html>
