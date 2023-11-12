@@ -147,9 +147,9 @@ def add():
 
         root_logger.error("Failed to add book due to an internal server")
         return jsonify({
-                "success": False,
-                "error": f"failed to add book {book_title}"
-            }), 500
+            "success": False,
+            "error": f"failed to add book {book_title}"
+        }), 500
     except Exception:
         root_logger.exception("failed to add book")
         return jsonify({
@@ -232,3 +232,15 @@ def delete():
             "success": False,
             "error": "Failed to delete book"
         }), 500
+
+
+@app.route("/failure/", methods=['GET'])
+def fail():
+    """
+    Intentionally fail and induce an internal server error (500)
+    """
+    root_logger.info("Intentional internal server error")
+    return jsonify({
+        "success": False,
+        "error": "Intentional error"
+    }), 500
